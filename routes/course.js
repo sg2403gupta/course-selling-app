@@ -12,3 +12,7 @@ courseRouter.post("/purchase", function (req, res) {
     message: "My course list",
   });
 });
+
+module.exports = {
+  courseRouter: courseRouter,
+};
