@@ -13,7 +13,7 @@ userRouter.post("/login", function (req, res) {
   });
 });
 
-userRouter.get("/purchases", function (req, res) {
+userRouter.get("/myCourses", function (req, res) {
   res.json({
     message: "Purchased list",
   });
