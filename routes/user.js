@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { Router } = require("express");
-const { userModel } = require("../db");
+const { userModel, purchaseModel, courseModel } = require("../db");
 const jwt = require("jsonwebtoken");
 const USER_JWT_SECRET = process.env.JWT_USER_PASSWORD;
 
@@ -70,9 +70,20 @@ userRouter.post("/signin", async function (req, res) {
   }
 });
 
-userRouter.get("/myCourses", function (req, res) {
+userRouter.get("/myCourses", async function (req, res) {
+  const userId = req.body;
+
+  const myCourses = await purchaseModel.find({
+    userId,
+  });
+
+  const courseData = await courseModel.find({
+    _id: { $in: myCourses.map((x) => x.courseId) },
+  });
+
   res.json({
-    message: "Purchased list",
+    myCourses,
+    courseData,
   });
 });
 
