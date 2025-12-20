@@ -92,22 +92,25 @@ adminRouter.post("/course", adminMiddleware, async function (req, res) {
 adminRouter.put("/course", adminMiddleware, async function (req, res) {
   const adminId = req.userId;
 
-  const course = await courseModel.updateOne(
+  const { title, description, price, imageUrl, courseId } = req.body;
+
+  const course = await courseModel.findOneAndUpdate(
     {
       _id: courseId,
       creatorId: adminId,
     },
-    {
-      title,
-      price,
-      imageUrl,
-      description,
-    }
+    { title, description, price, imageUrl },
+    { new: true }
   );
 
+  if (!course) {
+    return res.status(404).json({
+      message: "Course not found",
+    });
+  }
   res.json({
     message: "Course updated",
-    course,
+    courseId: course._id,
   });
 });
 
@@ -121,6 +124,7 @@ adminRouter.get("/course/bulk", adminMiddleware, async function (req, res) {
     courses,
   });
 });
+
 module.exports = {
-  adminRouter: adminRouter,
+  adminRouter,
 };
